@@ -9,6 +9,7 @@ dependencies = [
     "pydub>=0.25.1",
     "audioop-lts>=0.2.1",
     "pulsectl>=24.12.0",
+    "google-cloud-speech>=2.33.0",
 ]
 
 [project.optional-dependencies]

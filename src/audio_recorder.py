@@ -16,7 +16,7 @@ class AudioRecorder:
 
     def __init__(
         self,
-        output_dir: str = "~/audio",
+        output_dir: str = "~/audio/enregistrements",
         sample_rate: int = 44100,
         channels: int = 2,
         chunk_size: int = 1024,

@@ -67,8 +67,8 @@ Exemples d'utilisation:
         '--output',
         type=str,
         metavar='DIR',
-        default=str(Path.home() / "audio"),
-        help="Répertoire de sortie pour les fichiers audio (défaut: ~/audio)"
+        default=str(Path.home() / "audio" / "enregistrements"),
+        help="Répertoire de sortie pour les fichiers audio (défaut: ~/audio/enregistrements)"
     )
     parser.add_argument(
         '--bitrate',
