@@ -3,9 +3,11 @@
 import sys
 import signal
 import threading
+import argparse
 from pathlib import Path
 
 from src.audio_recorder import AudioRecorder
+from src.audio_devices import print_available_devices
 
 
 def signal_handler(signum, frame):
@@ -38,6 +40,55 @@ def wait_for_exit_command(stop_event: threading.Event):
 
 def main():
     """Fonction principale pour démarrer l'enregistreur audio."""
+    # Parser les arguments CLI
+    parser = argparse.ArgumentParser(
+        description="Enregistreur audio en continu avec encodage MP3",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Exemples d'utilisation:
+  %(prog)s                        # Enregistrer avec détection automatique
+  %(prog)s --list-devices         # Lister les périphériques disponibles
+  %(prog)s --device 5             # Enregistrer avec le périphérique #5
+  %(prog)s --output ~/recordings  # Enregistrer dans ~/recordings
+        """
+    )
+    parser.add_argument(
+        '--list-devices',
+        action='store_true',
+        help="Afficher la liste des périphériques audio disponibles et quitter"
+    )
+    parser.add_argument(
+        '--device',
+        type=int,
+        metavar='INDEX',
+        help="Spécifier l'index du périphérique audio à utiliser (voir --list-devices)"
+    )
+    parser.add_argument(
+        '--output',
+        type=str,
+        metavar='DIR',
+        default=str(Path.home() / "audio"),
+        help="Répertoire de sortie pour les fichiers audio (défaut: ~/audio)"
+    )
+    parser.add_argument(
+        '--bitrate',
+        type=str,
+        metavar='RATE',
+        default='128k',
+        help="Bitrate MP3 (défaut: 128k)"
+    )
+
+    args = parser.parse_args()
+
+    # Si --list-devices, afficher les périphériques et quitter
+    if args.list_devices:
+        print("=" * 80)
+        print("PÉRIPHÉRIQUES AUDIO DISPONIBLES")
+        print("=" * 80)
+        print()
+        print_available_devices()
+        return 0
+
     # Configurer les gestionnaires de signaux
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
@@ -48,10 +99,19 @@ def main():
     print()
 
     # Créer l'enregistreur audio
-    output_dir = Path.home() / "audio"
-    recorder = AudioRecorder(output_dir=str(output_dir))
+    output_dir = Path(args.output).expanduser()
+    recorder = AudioRecorder(
+        output_dir=str(output_dir),
+        bitrate=args.bitrate,
+        device_index=args.device
+    )
 
     print(f"Répertoire de sortie: {output_dir}")
+    print(f"Format d'encodage: MP3 ({args.bitrate})")
+    if args.device is not None:
+        print(f"Source audio: Périphérique spécifié (index {args.device})")
+    else:
+        print(f"Source audio: Détection automatique (loopback)")
     print()
 
     try:
@@ -59,6 +119,8 @@ def main():
         output_file = recorder.start_recording()
         print(f"✓ Enregistrement démarré")
         print(f"✓ Fichier: {output_file.name}")
+        if recorder.device_name:
+            print(f"✓ Périphérique: {recorder.device_name}")
         print()
         print("Tapez 'exit' pour arrêter l'enregistrement, ou appuyez sur Ctrl+C")
         print("-" * 60)
@@ -80,9 +142,9 @@ def main():
 
         # Arrêter l'enregistrement
         print()
-        print("Arrêt de l'enregistrement en cours...")
+        print("Arrêt de l'enregistrement et encodage MP3 en cours...")
         recorder.stop_recording()
-        print("✓ Enregistrement terminé et sauvegardé")
+        print("✓ Enregistrement terminé et encodé en MP3")
         print(f"✓ Fichier disponible: {output_file}")
 
     except PermissionError as e:
