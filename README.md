@@ -356,18 +356,6 @@ chmod 755 ~/audio
 2. Vérifiez que FFmpeg fonctionne : `ffmpeg -version`
 3. Vérifiez les logs pour voir si des erreurs sont apparues pendant l'encodage
 
-## Améliorations futures
-
-- **Rotation des fichiers** : Limiter l'espace disque utilisé
-- **Formats audio supplémentaires** : Support FLAC (sans perte), AAC (meilleure compression)
-- ✅ **Bitrate configurable** : Permettre de choisir le bitrate MP3 via CLI (implémenté)
-- **Configuration via CLI** : Options pour personnaliser taux d'échantillonnage, canaux, etc.
-- **Segments temporels** : Créer un nouveau fichier toutes les X minutes
-- **Détection de silence** : Ne pas enregistrer pendant les silences prolongés
-- **Métadonnées MP3** : Ajouter des tags ID3 (date, titre, etc.)
-- ✅ **Sélection de périphérique** : Permettre de choisir le périphérique via option CLI (implémenté)
-- **Indicateur de progression** : Afficher le temps d'enregistrement et la taille du fichier en direct
-
 ## Licence
 
 Ce projet est un exemple éducatif sans licence spécifique.
