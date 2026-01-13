@@ -69,7 +69,8 @@ Python 3.8 ou supérieur est requis.
 
 1. **Cloner ou télécharger le projet** :
 ```bash
-cd /home/julien/ai/audio-recorder
+git clone https://github.com/jle-roux/audio-recorder.git
+cd audio-recorder
 ```
 
 2. **Installer les dépendances avec uv** :
